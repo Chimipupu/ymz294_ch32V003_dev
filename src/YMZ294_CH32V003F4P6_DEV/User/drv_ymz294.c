@@ -43,6 +43,12 @@ uint8_t *p_reg[YMZ294_REG_CNT] = {
     &REG_ENVELOPE_TYPE.BYTE,
 };
 
+// YMZ294のレジスタビットマスクテーブル
+const uint8_t g_ymz294_reg_bit_mask_tbl[YMZ294_REG_CNT] = {
+    0xFF, 0x0F, 0xFF, 0x0F, 0xFF, 0x0F, 0x1F, 0x3F,     // Addr 0x00 ~ 0x07
+    0x1F, 0x1F, 0x1F, 0xFF, 0xFF, 0x0F                  // Addr 0x08 ~ 0x0D
+};
+
 static void reg_init_all(void);
 
 static void reg_init_all(void)
@@ -63,7 +69,7 @@ static void reg_init_all(void)
  */
 void drv_ymz294_set_reg(uint8_t addr, uint8_t val)
 {
-    *p_reg[addr] = val;
+    *p_reg[addr] = val & g_ymz294_reg_bit_mask_tbl[addr];
     // TODO:YMZ294への書き込み
 }
 
@@ -75,8 +81,11 @@ void drv_ymz294_set_reg(uint8_t addr, uint8_t val)
  */
 uint8_t drv_ymz294_get_reg(uint8_t addr)
 {
-    uint8_t reg;
-    reg = *p_reg[addr];
+    uint8_t tmp,reg;
+
+    tmp = *p_reg[addr];
+    reg = tmp & g_ymz294_reg_bit_mask_tbl[addr];
+
     return reg;
 }
 
