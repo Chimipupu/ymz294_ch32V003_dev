@@ -49,6 +49,59 @@ const uint8_t g_ymz294_reg_bit_mask_tbl[YMZ294_REG_CNT] = {
     0x1F, 0x1F, 0x1F, 0xFF, 0xFF, 0x0F              // Addr 0x08 ~ 0x0D
 };
 
+// YMZ294用のMIDIノート番号テーブル
+const uint16_t g_midi_notenum_tbl[] = {
+//  C0     C#0     D0     D#0    E0     F0     F#0    G0
+    15289, 14431, 13621, 12856, 12135, 11454, 10811, 10204, // MIDIノートナンバー 0~7
+
+//  G#0    A0     A#0    B0     C1     C#1    D1     D#1
+    9631,  9091,  8581,  8099,  7645,  7215,  6810,  6428,  // MIDIノートナンバー 8~15
+
+//  E1     F1     F#1    G1     G#1    A1     A#1    B1
+    6067,  5727,  5405,  5102,  4816,  4545,  4290,  4050,  // MIDIノートナンバー 16~23
+
+//  C2     C#2    D2     D#2    E2     F2     F#2    G2
+    3822,  3608,  3405,  3214,  3034,  2863,  2703,  2551,  // MIDIノートナンバー 24~31
+
+//  G#2    A2     A#2    B2     C3     C#3    D3     D#3
+    2408,  2273,  2145,  2025,  1911,  1804,  1703,  1607,  // MIDIノートナンバー 32~39
+
+//  E3     F3     F#3    G3     G#3    A3     A#3    B3
+    1517,  1432,  1351,  1276,  1204,  1136,  1073,  1012,  // MIDIノートナンバー 40~47
+
+//  C4     C#4    D4     D#4    E4     F4     F#4    G4
+    956,   902,   851,   804,   758,   716,   676,  638,    // MIDIノートナンバー 48~55
+
+//  G#4    A4     A#4    B4     C5     C#5    D5     D#5
+    602,   568,   536,   506,   478,   451,   426,   402,   // MIDIノートナンバー 56~63
+
+//  E5     F5     F#5    G5     G#5    A5     A#5    B5
+    379,   358,   338,   319,   301,   284,   268,   253,   // MIDIノートナンバー 64~71
+
+//  C6     C#6    D6     D#6    E6     F6     F#6    G6
+    239,   225,   213,   201,   190,   179,   169,   159,   // MIDIノートナンバー 72~79
+
+//  G#6    A6     A#6    B6     C7     C#7    D7     D#7
+    150,   142,   134,   127,   119,   113,   106,   100,   // MIDIノートナンバー 80~87
+
+//  E7     F7     F#7    G7     G#7    A7     A#7    B7
+    95,    89,    84,    80,    75,    71,    67,    63,    // MIDIノートナンバー 88~95
+
+//  C8     C#8    D8     D#8    E8     F8     F#8    G8
+    60,    56,    53,    50,    47,    45,    42,    40,    // MIDIノートナンバー 96~103
+
+//  G#8    A8     A#8    B8     C9     C#9    D9     D#9
+    38,    36,    34,    32,    30,    28,    27,    25,    // MIDIノートナンバー 104~111
+
+//  E9     F9     F#9    G9     G#9    A9     A#9    B9
+    24,    22,    21,    20,    19,    18,    17,    16,    // MIDIノートナンバー 112~119
+
+//  C10    C#10   D10    D#10   E10    F10    F#10   G10
+    15,    14,    13,    13,    12,    11,    11,    10,    // MIDIノートナンバー 120~127
+
+    0                                                       // 無音
+};
+
 static void reg_init_all(void);
 static void data_pin_set_byte(uint8_t val);
 
@@ -123,6 +176,11 @@ void drv_ymz294_set_reg(uint8_t addr, uint8_t val)
     GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_RESET);
     GPIO_WriteBit(GPIOD, YMZ294_CS_PIN, Bit_RESET);
     GPIO_WriteBit(GPIOC, YMZ294_A0_PIN, Bit_RESET);
+
+    Delay_Ms(5);
+    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_SET);
+    GPIO_WriteBit(GPIOD, YMZ294_CS_PIN, Bit_SET);
+    GPIO_WriteBit(GPIOC, YMZ294_A0_PIN, Bit_RESET);
 }
 
 /**
@@ -142,7 +200,39 @@ uint8_t drv_ymz294_get_reg(uint8_t addr)
 }
 
 /**
- * @brief ミキサーからトーンとノイズの出力設定
+ * @brief YMZ294のトーンの周波数をMIDIノートナンバーに応じて設定
+ * 
+ * @param ch  Ch A~C
+ * @param notenum MIDIノートナンバー0～127
+ */
+void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum)
+{
+    uint8_t upper, lower;
+
+    upper = (uint8_t)(g_midi_notenum_tbl[notenum] >> 8);
+    lower = (uint8_t)(g_midi_notenum_tbl[notenum] & 0x00FF);
+
+    switch (ch)
+    {
+        case YMZ294_TONE_CH_A:
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR, lower);
+            break;
+
+        case YMZ294_TONE_CH_B:
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR, lower);
+            break;
+
+        case YMZ294_TONE_CH_C:
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR, lower);
+            break;
+    }
+}
+
+/**
+ * @brief YMZ294のミキサー出力(トーンとノイズ)設定
  * 
  * @param type CONFIG_TONE ... トーン出力、CONFIG_NOISE ... ノイズ出力
  * @param val Ch A~Cの値(各ビットが0 ... 出力、1 ... NC)
@@ -176,6 +266,4 @@ void drv_ymz294_mixser_config(uint8_t type, uint8_t config)
 void drv_ymz294_init(void)
 {
     reg_init_all();
-
-    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE_NOISE, 0);
 }
