@@ -49,60 +49,71 @@ const uint8_t g_ymz294_reg_bit_mask_tbl[YMZ294_REG_CNT] = {
     0x1F, 0x1F, 0x1F, 0xFF, 0xFF, 0x0F              // Addr 0x08 ~ 0x0D
 };
 
-// YMZ294音階テーブルインデックス定義
-typedef enum {
-    TONE_TBL_C4 = 0,    // ド  (C4) 261.63 Hz (中央)
-    TONE_TBL_D4,        // レ  (D4) 293.66 Hz
-    TONE_TBL_E4,        // ミ  (E4) 329.63 Hz
-    TONE_TBL_F4,        // ファ(F4) 349.23 Hz
-    TONE_TBL_G4,        // ソ  (G4) 392.00 Hz
-    TONE_TBL_A4,        // ラ  (A4) 440.00 Hz (基準音)
-    TONE_TBL_B4,        // シ  (B4) 493.88 Hz
-
-    TONE_TBL_C5,        // ド  (C5) 523.00 Hz
-    TONE_TBL_D5,        // レ  (D5) 587.33 Hz
-    TONE_TBL_E5,        // ミ  (E5) 659.26 Hz
-    TONE_TBL_F5,        // ファ(F5) 698.46 Hz
-    TONE_TBL_G5,        // ソ  (G5) 783.99 Hz
-    TONE_TBL_A5,        // ラ  (A5) 880.00 Hz
-    TONE_TBL_B5,        // シ  (B5) 987.77 Hz
-
-    TONE_TBL_C6,        // ド  (C6) 1046.50 Hz
-    TONE_TBL_D6,        // レ  (D6) 1174.66 Hz
-    TONE_TBL_E6,        // ミ  (E6) 1318.51 Hz
-    TONE_TBL_F6,        // ファ(F6) 1396.91 Hz
-    TONE_TBL_G6,        // ソ  (G6) 1567.98 Hz
-    TONE_TBL_A6,        // ラ  (A6) 1760.00 Hz
-    TONE_TBL_B6,        // シ  (B6) 1975.53 Hz
-    TONE_TBL_C7,        // ド  (C7) 2093.00 Hz
-} e_tone_tbl_idx;
-
 // YMZ294用音階テーブル
 const uint16_t g_tone_tp_tbl[] = {
-    478, // ド  (C4) ... 261.63 Hz (中央)
-    425, // レ  (D4) ... 293.66 Hz
-    379, // ミ  (E4) ... 329.63 Hz
-    358, // ファ(F4) ... 349.23 Hz
-    319, // ソ  (G4) ... 392.00 Hz
-    284, // ラ  (A4) ... 440.00 Hz (基準)
-    253, // シ  (B4) ... 493.88 Hz
+    4545, // ラ  (A0) 27.50 Hz (最低音)
+    4050, // シ  (B0) 30.87 Hz
 
-    239, // ド  (C5) ... 523.00 Hz
-    213, // レ  (D5) ... 587.33 Hz
-    190, // ミ  (E5) ... 659.26 Hz
-    179, // ファ(F5) ... 698.46 Hz
-    159, // ソ  (G5) ... 783.99 Hz
-    142, // ラ  (A5) ... 880.00 Hz
-    127, // シ  (B5) ... 987.77 Hz
+    3822, // ド  (C1) 32.70 Hz
+    3405, // レ  (D1) 36.71 Hz
+    3034, // ミ  (E1) 41.20 Hz
+    2863, // ファ(F1) 43.65 Hz
+    2551, // ソ  (G1) 49.00 Hz
+    2273, // ラ  (A1) 55.00 Hz
+    2025, // シ  (B1) 61.74 Hz
 
-    119, // ド  (C6) ... 1046.50 Hz
-    106, // レ  (D6) ... 1174.66 Hz
-    95,  // ミ  (E6) ... 1318.51 Hz
-    89,  // ファ(F6) ... 1396.91 Hz
-    80,  // ソ  (G6) ... 1567.98 Hz
-    71,  // ラ  (A6) ... 1760.00 Hz
-    63,  // シ  (B6) ... 1975.53 Hz
-    60,  // ド  (C7) ... 2093.00 Hz
+    1911, // ド  (C2)  65.41 Hz
+    1703, // レ  (D2)  73.42 Hz
+    1517, // ミ  (E2)  82.41 Hz
+    1432, // ファ(F2)  87.31 Hz
+    1276, // ソ  (G2)  98.00 Hz
+    1136, // ラ  (A2) 110.00 Hz
+    1012, // シ  (B2) 123.47 Hz
+
+    956,  // ド  (C3) 130.81 Hz
+    851,  // レ  (D3) 146.83 Hz
+    758,  // ミ  (E3) 164.81 Hz
+    716,  // ファ(F3) 174.61 Hz
+    638,  // ソ  (G3) 196.00 Hz
+    568,  // ラ  (A3) 220.00 Hz
+    506,  // シ  (B3) 246.94 Hz
+
+    478,  // ド  (C4) 261.63 Hz (中央)
+    425,  // レ  (D4) 293.66 Hz
+    379,  // ミ  (E4) 329.63 Hz
+    358,  // ファ(F4) 349.23 Hz
+    338,  // ファ# (F#4) 369.99 Hz
+    319,  // ソ  (G4) 392.00 Hz
+    301,  // ソ#  (G#4) 415.31 Hz
+    284,  // ラ  (A4) 440.00 Hz (基準)
+    253,  // シ  (B4) 493.88 Hz
+
+    239,  // ド  (C5) 523.00 Hz
+    225,  // ド# (C#5) 554.37 Hz
+    213,  // レ  (D5) 587.33 Hz
+    190,  // ミ  (E5) 659.26 Hz
+    179,  // ファ(F5) 698.46 Hz
+    159,  // ソ  (G5) 783.99 Hz
+    142,  // ラ  (A5) 880.00 Hz
+    127,  // シ  (B5) 987.77 Hz
+
+    119,  // ド  (C6) 1046.50 Hz
+    106,  // レ  (D6) 1174.66 Hz
+    95,   // ミ  (E6) 1318.51 Hz
+    89,   // ファ(F6) 1396.91 Hz
+    80,   // ソ  (G6) 1567.98 Hz
+    71,   // ラ  (A6) 1760.00 Hz
+    63,   // シ  (B6) 1975.53 Hz
+
+    60,   // ド  (C7) 2093.01 Hz
+    53,   // レ  (D7) 2349.32 Hz
+    47,   // ミ  (E7) 2637.02 Hz
+    45,   // ファ(F7) 2793.83 Hz
+    40,   // ソ  (G7) 3135.96 Hz
+    36,   // ラ  (A7) 3520.00 Hz
+    32,   // シ  (B7) 3951.07 Hz
+
+    30,   // ド  (C8) 4186.01 Hz (最高音)
 };
 
 static void reg_init_all(void);
@@ -309,6 +320,7 @@ void drv_ymz294_mixser_config(uint8_t type, uint8_t config)
 
     tmp = *p_reg[YMZ294_REG_MIXER_ADDR];
     tmp = tmp & ~config;
+    *p_reg[YMZ294_REG_MIXER_ADDR] = tmp;
 
     switch (type)
     {
@@ -335,16 +347,44 @@ void drv_ymz294_init(void)
 {
     reg_init_all();
 
-#if 0
+#ifdef YMZ294_DRV_DEBUG
     ymz294_test();
-#endif
+#endif // YMZ294_DRV_DEBUG
 
+    drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
     drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A_B_C);
     drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x0F);
     drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x0F);
     drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x0F);
 }
 
+void drv_ymz294_play_music_tone(const uint8_t *p_tone_tbl, uint16_t size)
+{
+    uint8_t i;
+    uint8_t *p_tbl;
+
+    p_tbl = (uint8_t *)p_tone_tbl;
+
+    drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
+    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A_B_C);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x0F);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x0F);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x0F);
+
+    for (i = 0; i < size; i++)
+    {
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_A, *p_tbl);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_B, *p_tbl);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_C, *p_tbl);
+        p_tbl++;
+        Delay_Ms(500);
+    }
+
+    drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
+    drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
+}
+
+#ifdef YMZ294_DRV_DEBUG
 void ymz294_test(void)
 {
     uint8_t i;
@@ -365,3 +405,4 @@ void ymz294_test(void)
     drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
     drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
 }
+#endif // YMZ294_DRV_DEBUG
