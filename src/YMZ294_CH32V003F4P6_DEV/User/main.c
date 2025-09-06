@@ -85,6 +85,20 @@ static void pin_conf(void)
     pin_pd7.GPIO_Mode = GPIO_Mode_Out_PP;
     pin_pd7.GPIO_Speed = GPIO_Speed_30MHz;
     GPIO_Init(GPIOD, &pin_pd7);
+
+
+    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_SET);
+    GPIO_WriteBit(GPIOD, YMZ294_CS_PIN, Bit_SET);
+    GPIO_WriteBit(GPIOC, YMZ294_A0_PIN, Bit_RESET);
+
+    GPIO_WriteBit(GPIOD, YMZ294_D0_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOD, YMZ294_D1_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOC, YMZ294_D2_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOC, YMZ294_D3_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOC, YMZ294_D4_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOC, YMZ294_D5_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOC, YMZ294_D6_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOD, YMZ294_D7_PIN, Bit_RESET);
 }
 
 int main(void)
