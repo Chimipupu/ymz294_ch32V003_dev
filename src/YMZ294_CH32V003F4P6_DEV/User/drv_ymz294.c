@@ -166,21 +166,22 @@ void drv_ymz294_set_reg(uint8_t addr, uint8_t val)
     *p_reg[addr] = val & g_ymz294_reg_bit_mask_tbl[addr];
 
     // アドレス設定
-    data_pin_set_byte(addr);
-    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOC, YMZ294_A0_PIN, Bit_RESET);
     GPIO_WriteBit(GPIOD, YMZ294_CS_PIN, Bit_RESET);
-    GPIO_WriteBit(GPIOC, YMZ294_A0_PIN, Bit_SET);
+    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_RESET);
+    data_pin_set_byte(addr);
+    GPIO_WriteBit(GPIOD, YMZ294_CS_PIN, Bit_SET);
+    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_SET);
+
+    Delay_Us(100);
 
     // データ設定
-    data_pin_set_byte(val);
-    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOC, YMZ294_A0_PIN, Bit_SET);
     GPIO_WriteBit(GPIOD, YMZ294_CS_PIN, Bit_RESET);
-    GPIO_WriteBit(GPIOC, YMZ294_A0_PIN, Bit_RESET);
-
-    Delay_Ms(5);
-    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_SET);
+    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_RESET);
+    data_pin_set_byte(val);
     GPIO_WriteBit(GPIOD, YMZ294_CS_PIN, Bit_SET);
-    GPIO_WriteBit(GPIOC, YMZ294_A0_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_SET);
 }
 
 /**
@@ -233,8 +234,13 @@ void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum)
 {
     uint8_t upper, lower;
 
+#if 0
+    upper = (uint8_t)((284/2) >> 8);
+    lower = (uint8_t)((284/2) & 0x00FF);
+#else
     upper = (uint8_t)(g_midi_notenum_tbl[notenum] >> 8);
     lower = (uint8_t)(g_midi_notenum_tbl[notenum] & 0x00FF);
+#endif
 
     switch (ch)
     {
@@ -263,18 +269,20 @@ void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum)
  */
 void drv_ymz294_mixser_config(uint8_t type, uint8_t config)
 {
+    uint8_t tmp;
+
+    tmp = *p_reg[YMZ294_REG_MIXER_ADDR];
+    tmp = tmp & ~config;
+
     switch (type)
     {
         case MIXSER_CONFIG_TONE:
-            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, config);
-            break;
-
         case MIXSER_CONFIG_NOISE:
-            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, config << 3);
+            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, tmp);
             break;
 
         case MIXSER_CONFIG_TONE_NOISE:
-            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, MIXSER_OUTPUT_NOISE_CH_A_B_C);
+            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, 0x00);
             break;
 
         case MIXSER_OUTPUT_MUTE:
@@ -290,4 +298,18 @@ void drv_ymz294_mixser_config(uint8_t type, uint8_t config)
 void drv_ymz294_init(void)
 {
     reg_init_all();
+
+    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_A, 15);
+}
+
+void ymz294_test(void)
+{
+    uint8_t i;
+
+    for (i = 0; i < 128; i++)
+    {
+        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_A, i);
+        Delay_Ms(300);
+    }
 }

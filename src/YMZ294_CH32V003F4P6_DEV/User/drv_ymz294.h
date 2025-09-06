@@ -19,46 +19,46 @@
 #include <ch32v00x.h>
 
 // YMZ294 Ch関連
-#define YMZ294_TONE_CH_A                0
-#define YMZ294_TONE_CH_B                1
-#define YMZ294_TONE_CH_C                2
+#define YMZ294_TONE_CH_A                        0
+#define YMZ294_TONE_CH_B                        1
+#define YMZ294_TONE_CH_C                        2
 
 // YMZ294 ミキサー関連
-#define MIXSER_OUTPUT_NONE              0x3F
-#define MIXSER_OUTPUT_TONE_CH_A         0x07
-#define MIXSER_OUTPUT_TONE_CH_B         0x05
-#define MIXSER_OUTPUT_TONE_CH_C         0x03
-#define MIXSER_OUTPUT_TONE_CH_A_B       0x04
-#define MIXSER_OUTPUT_TONE_CH_A_C       0x02
-#define MIXSER_OUTPUT_TONE_CH_B_C       0x01
-#define MIXSER_OUTPUT_TONE_CH_A_B_C     0x00
-#define MIXSER_OUTPUT_NOISE_CH_A        0x07
-#define MIXSER_OUTPUT_NOISE_CH_B        0x05
-#define MIXSER_OUTPUT_NOISE_CH_C        0x03
-#define MIXSER_OUTPUT_NOISE_CH_A_B      0x04
-#define MIXSER_OUTPUT_NOISE_CH_A_C      0x02
-#define MIXSER_OUTPUT_NOISE_CH_B_C      0x01
-#define MIXSER_OUTPUT_NOISE_CH_A_B_C    0x00
+#define MIXSER_OUTPUT_NONE                      0x3F
+#define MIXSER_OUTPUT_TONE_CH_A                 0x01
+#define MIXSER_OUTPUT_TONE_CH_B                 0x02
+#define MIXSER_OUTPUT_TONE_CH_C                 0x04
+#define MIXSER_OUTPUT_TONE_CH_A_B               0x03
+#define MIXSER_OUTPUT_TONE_CH_A_C               0x05
+#define MIXSER_OUTPUT_TONE_CH_B_C               0x06
+#define MIXSER_OUTPUT_TONE_CH_A_B_C             0x07
+#define MIXSER_OUTPUT_NOISE_CH_A                0x08
+#define MIXSER_OUTPUT_NOISE_CH_B                0x10
+#define MIXSER_OUTPUT_NOISE_CH_C                0x20
+#define MIXSER_OUTPUT_NOISE_CH_A_B              0x18
+#define MIXSER_OUTPUT_NOISE_CH_A_C              0x28
+#define MIXSER_OUTPUT_NOISE_CH_B_C              0x30
+#define MIXSER_OUTPUT_NOISE_CH_A_B_C            0x38
 
-#define MIXSER_OUTPUT_ON                0
-#define MIXSER_OUTPUT_OFF               1
-#define MIXSER_CONFIG_TONE              0
-#define MIXSER_CONFIG_NOISE             1
-#define MIXSER_CONFIG_TONE_NOISE        0x80
-#define MIXSER_OUTPUT_MUTE              0xFF     // ミュート(ミキサーでトーンとノイズ ChA~Cの出力OFF)
+#define MIXSER_OUTPUT_ON                        0
+#define MIXSER_OUTPUT_OFF                       1
+#define MIXSER_CONFIG_TONE                      0
+#define MIXSER_CONFIG_NOISE                     1
+#define MIXSER_CONFIG_TONE_NOISE                0x80
+#define MIXSER_OUTPUT_MUTE                      0xFF     // ミュート(ミキサーでトーンとノイズ ChA~Cの出力OFF)
 
 // YMZ294の制御ピン
-#define YMZ294_WR_PIN     GPIO_Pin_4  // PD4
-#define YMZ294_CS_PIN     GPIO_Pin_0  // PD0
-#define YMZ294_A0_PIN     GPIO_Pin_0  // PC0
-#define YMZ294_D0_PIN     GPIO_Pin_3  // PD3
-#define YMZ294_D1_PIN     GPIO_Pin_2  // PD2
-#define YMZ294_D2_PIN     GPIO_Pin_7  // PC7
-#define YMZ294_D3_PIN     GPIO_Pin_6  // PC6
-#define YMZ294_D4_PIN     GPIO_Pin_5  // PC5
-#define YMZ294_D5_PIN     GPIO_Pin_4  // PC4
-#define YMZ294_D6_PIN     GPIO_Pin_3  // PC3
-#define YMZ294_D7_PIN     GPIO_Pin_7  // PD7
+#define YMZ294_WR_PIN                           GPIO_Pin_4  // PD4
+#define YMZ294_CS_PIN                           GPIO_Pin_0  // PD0
+#define YMZ294_A0_PIN                           GPIO_Pin_0  // PC0
+#define YMZ294_D0_PIN                           GPIO_Pin_3  // PD3
+#define YMZ294_D1_PIN                           GPIO_Pin_2  // PD2
+#define YMZ294_D2_PIN                           GPIO_Pin_7  // PC7
+#define YMZ294_D3_PIN                           GPIO_Pin_6  // PC6
+#define YMZ294_D4_PIN                           GPIO_Pin_5  // PC5
+#define YMZ294_D5_PIN                           GPIO_Pin_4  // PC4
+#define YMZ294_D6_PIN                           GPIO_Pin_3  // PC3
+#define YMZ294_D7_PIN                           GPIO_Pin_7  // PD7
 
 // YMZ294のレジスタ
 #define YMZ294_REG_CNT                           0x0E // YMZ294のレジスタ数
@@ -258,5 +258,6 @@ void drv_ymz294_set_volume(uint8_t ch, uint8_t volume);
 void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum);
 void drv_ymz294_mixser_config(uint8_t type, uint8_t val);
 void drv_ymz294_init(void);
+void ymz294_test(void);
 
 #endif // DRV_YMZ294_H
