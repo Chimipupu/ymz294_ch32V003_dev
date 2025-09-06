@@ -49,6 +49,34 @@ const uint8_t g_ymz294_reg_bit_mask_tbl[YMZ294_REG_CNT] = {
     0x1F, 0x1F, 0x1F, 0xFF, 0xFF, 0x0F              // Addr 0x08 ~ 0x0D
 };
 
+// YMZ294音階テーブルインデックス定義
+typedef enum {
+    TONE_TBL_C4 = 0,    // ド  (C4) 261.63 Hz (中央)
+    TONE_TBL_D4,        // レ  (D4) 293.66 Hz
+    TONE_TBL_E4,        // ミ  (E4) 329.63 Hz
+    TONE_TBL_F4,        // ファ(F4) 349.23 Hz
+    TONE_TBL_G4,        // ソ  (G4) 392.00 Hz
+    TONE_TBL_A4,        // ラ  (A4) 440.00 Hz (基準音)
+    TONE_TBL_B4,        // シ  (B4) 493.88 Hz
+
+    TONE_TBL_C5,        // ド  (C5) 523.00 Hz
+    TONE_TBL_D5,        // レ  (D5) 587.33 Hz
+    TONE_TBL_E5,        // ミ  (E5) 659.26 Hz
+    TONE_TBL_F5,        // ファ(F5) 698.46 Hz
+    TONE_TBL_G5,        // ソ  (G5) 783.99 Hz
+    TONE_TBL_A5,        // ラ  (A5) 880.00 Hz
+    TONE_TBL_B5,        // シ  (B5) 987.77 Hz
+
+    TONE_TBL_C6,        // ド  (C6) 1046.50 Hz
+    TONE_TBL_D6,        // レ  (D6) 1174.66 Hz
+    TONE_TBL_E6,        // ミ  (E6) 1318.51 Hz
+    TONE_TBL_F6,        // ファ(F6) 1396.91 Hz
+    TONE_TBL_G6,        // ソ  (G6) 1567.98 Hz
+    TONE_TBL_A6,        // ラ  (A6) 1760.00 Hz
+    TONE_TBL_B6,        // シ  (B6) 1975.53 Hz
+    TONE_TBL_C7,        // ド  (C7) 2093.00 Hz
+} e_tone_tbl_idx;
+
 // YMZ294用音階テーブル
 const uint16_t g_tone_tp_tbl[] = {
     478, // ド  (C4) ... 261.63 Hz (中央)
@@ -77,63 +105,9 @@ const uint16_t g_tone_tp_tbl[] = {
     60,  // ド  (C7) ... 2093.00 Hz
 };
 
-#if 0
-// YMZ294用のMIDIノート番号テーブル
-const uint16_t g_midi_notenum_tbl[] = {
-//  C0     C#0     D0     D#0    E0     F0     F#0    G0
-    15289, 14431, 13621, 12856, 12135, 11454, 10811, 10204, // MIDIノートナンバー 0~7
-
-//  G#0    A0     A#0    B0     C1     C#1    D1     D#1
-    9631,  9091,  8581,  8099,  7645,  7215,  6810,  6428,  // MIDIノートナンバー 8~15
-
-//  E1     F1     F#1    G1     G#1    A1     A#1    B1
-    6067,  5727,  5405,  5102,  4816,  4545,  4290,  4050,  // MIDIノートナンバー 16~23
-
-//  C2     C#2    D2     D#2    E2     F2     F#2    G2
-    3822,  3608,  3405,  3214,  3034,  2863,  2703,  2551,  // MIDIノートナンバー 24~31
-
-//  G#2    A2     A#2    B2     C3     C#3    D3     D#3
-    2408,  2273,  2145,  2025,  1911,  1804,  1703,  1607,  // MIDIノートナンバー 32~39
-
-//  E3     F3     F#3    G3     G#3    A3     A#3    B3
-    1517,  1432,  1351,  1276,  1204,  1136,  1073,  1012,  // MIDIノートナンバー 40~47
-
-//  C4     C#4    D4     D#4    E4     F4     F#4    G4
-    956,   902,   851,   804,   758,   716,   676,  638,    // MIDIノートナンバー 48~55
-
-//  G#4    A4     A#4    B4     C5     C#5    D5     D#5
-    602,   568,   536,   506,   478,   451,   426,   402,   // MIDIノートナンバー 56~63
-
-//  E5     F5     F#5    G5     G#5    A5     A#5    B5
-    379,   358,   338,   319,   301,   284,   268,   253,   // MIDIノートナンバー 64~71
-
-//  C6     C#6    D6     D#6    E6     F6     F#6    G6
-    239,   225,   213,   201,   190,   179,   169,   159,   // MIDIノートナンバー 72~79
-
-//  G#6    A6     A#6    B6     C7     C#7    D7     D#7
-    150,   142,   134,   127,   119,   113,   106,   100,   // MIDIノートナンバー 80~87
-
-//  E7     F7     F#7    G7     G#7    A7     A#7    B7
-    95,    89,    84,    80,    75,    71,    67,    63,    // MIDIノートナンバー 88~95
-
-//  C8     C#8    D8     D#8    E8     F8     F#8    G8
-    60,    56,    53,    50,    47,    45,    42,    40,    // MIDIノートナンバー 96~103
-
-//  G#8    A8     A#8    B8     C9     C#9    D9     D#9
-    38,    36,    34,    32,    30,    28,    27,    25,    // MIDIノートナンバー 104~111
-
-//  E9     F9     F#9    G9     G#9    A9     A#9    B9
-    24,    22,    21,    20,    19,    18,    17,    16,    // MIDIノートナンバー 112~119
-
-//  C10    C#10   D10    D#10   E10    F10    F#10   G10
-    15,    14,    13,    13,    12,    11,    11,    10,    // MIDIノートナンバー 120~127
-
-    0                                                       // 無音
-};
-#endif
-
 static void reg_init_all(void);
 static void data_pin_set_byte(uint8_t val);
+static void set_tone_tp(uint8_t ch, uint8_t upper, uint8_t lower);
 
 static void reg_init_all(void)
 {
@@ -182,6 +156,27 @@ static void data_pin_set_byte(uint8_t val)
                 GPIO_WriteBit(GPIOD, YMZ294_D7_PIN, bit);
                 break;
         }
+    }
+}
+
+static void set_tone_tp(uint8_t ch, uint8_t upper, uint8_t lower)
+{
+    switch (ch)
+    {
+        case YMZ294_TONE_CH_A:
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, (uint8_t)upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            break;
+
+        case YMZ294_TONE_CH_B:
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, (uint8_t)upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            break;
+
+        case YMZ294_TONE_CH_C:
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, (uint8_t)upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            break;
     }
 }
 
@@ -255,38 +250,49 @@ void drv_ymz294_set_volume(uint8_t ch, uint8_t volume)
 }
 
 /**
- * @brief YMZ294のトーンの周波数をMIDIノートナンバーに応じて設定
+ * @brief YMZ294のトーンの周波数設定関数
  * 
  * @param ch Ch A~C
- * @param notenum MIDIノートナンバー0～127
+ * @param freq 設定したい音階
  */
-void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum)
+void drv_ymz294_set_tone_freq(uint8_t ch, uint16_t tone)
 {
     uint16_t upper, lower;
 
-#if 1
-    upper = ((g_tone_tp_tbl[notenum] & 0x0F00) >> 8);
-    lower = (g_tone_tp_tbl[notenum] & 0x00FF);
-#else
-    upper = (uint8_t)(g_midi_notenum_tbl[notenum] >> 8);
-    lower = (uint8_t)(g_midi_notenum_tbl[notenum] & 0x00FF);
-#endif
+    upper = ((g_tone_tp_tbl[tone] & 0x0F00) >> 8);
+    lower = (g_tone_tp_tbl[tone] & 0x00FF);
 
+    set_tone_tp(ch, upper, lower);
+}
+
+void drv_ymz294_set_tone_off(uint8_t ch)
+{
     switch (ch)
     {
         case YMZ294_TONE_CH_A:
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, (uint8_t)upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, 0);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR,   0);
             break;
 
         case YMZ294_TONE_CH_B:
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, (uint8_t)upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, 0);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR,   0);
             break;
 
         case YMZ294_TONE_CH_C:
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, (uint8_t)upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, 0);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR,   0);
+            break;
+
+        case YMZ294_TONE_CH_ALL:
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, 0);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR,   0);
+
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, 0);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR,   0);
+
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, 0);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR,   0);
             break;
     }
 }
@@ -329,6 +335,10 @@ void drv_ymz294_init(void)
 {
     reg_init_all();
 
+#if 0
+    ymz294_test();
+#endif
+
     drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A_B_C);
     drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x0F);
     drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x0F);
@@ -338,20 +348,20 @@ void drv_ymz294_init(void)
 void ymz294_test(void)
 {
     uint8_t i;
-#ifdef DEBUG_PRINTF
-    uint16_t tp;
-#endif // DEBUG_PRINTF
+
+    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A_B_C);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x0F);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x0F);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x0F);
 
     for (i = 0; i < 8; i++)
     {
-        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_A, i);
-        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_B, i+7);
-        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_C, i+14);
-#ifdef DEBUG_PRINTF
-        tp = *p_reg[YMZ294_REG_CH_A_SOUND_FREQ_ADDR];
-        tp = tp | (*p_reg[YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR] << 8);
-        printf("tp = %d\r\n", tp);
-#endif // DEBUG_PRINTF
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_A, i);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_B, i+7);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_C, i+14);
         Delay_Ms(1000);
     }
+
+    drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
+    drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
 }

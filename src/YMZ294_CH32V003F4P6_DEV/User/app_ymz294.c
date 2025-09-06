@@ -15,11 +15,9 @@
 void app_ymz294_init()
 {
     // TODO
-    // ymz294_test();
 }
 
 void app_ymz294_main()
 {
     // printf("YMZ294 Develop by CH32V003!\r\n");
-    ymz294_test();
 }

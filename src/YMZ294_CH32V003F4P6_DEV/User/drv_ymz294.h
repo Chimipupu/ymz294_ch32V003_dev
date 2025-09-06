@@ -24,6 +24,7 @@
 #define YMZ294_TONE_CH_A                        0
 #define YMZ294_TONE_CH_B                        1
 #define YMZ294_TONE_CH_C                        2
+#define YMZ294_TONE_CH_ALL                      0xFF
 
 // YMZ294 ミキサー関連
 #define MIXSER_OUTPUT_NONE                      0x3F
@@ -257,7 +258,7 @@ typedef union {
 void drv_ymz294_set_reg(uint8_t addr, uint8_t val);
 uint8_t drv_ymz294_get_reg(uint8_t addr);
 void drv_ymz294_set_volume(uint8_t ch, uint8_t volume);
-void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum);
+void drv_ymz294_set_tone_off(uint8_t ch);
 void drv_ymz294_mixser_config(uint8_t type, uint8_t val);
 void drv_ymz294_init(void);
 void ymz294_test(void);
