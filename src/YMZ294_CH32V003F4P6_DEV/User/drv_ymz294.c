@@ -60,6 +60,8 @@ static void reg_init_all(void)
     {
         *p_reg[i] = 0;
     }
+
+    *p_reg[YMZ294_REG_MIXER_ADDR] = MIXSER_OUTPUT_NONE;
 }
 
 static void data_pin_set_byte(uint8_t val)
@@ -139,7 +141,41 @@ uint8_t drv_ymz294_get_reg(uint8_t addr)
     return reg;
 }
 
+/**
+ * @brief ミキサーからトーンとノイズの出力設定
+ * 
+ * @param type CONFIG_TONE ... トーン出力、CONFIG_NOISE ... ノイズ出力
+ * @param val Ch A~Cの値(各ビットが0 ... 出力、1 ... NC)
+ */
+void drv_ymz294_mixser_config(uint8_t type, uint8_t config)
+{
+    switch (type)
+    {
+        case MIXSER_CONFIG_TONE:
+            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, config);
+            break;
+
+        case MIXSER_CONFIG_NOISE:
+            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, config << 3);
+            break;
+
+        case MIXSER_CONFIG_TONE_NOISE:
+            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, MIXSER_OUTPUT_NOISE_CH_A_B_C);
+            break;
+
+        case MIXSER_OUTPUT_MUTE:
+            drv_ymz294_set_reg(YMZ294_REG_MIXER_ADDR, MIXSER_OUTPUT_NONE);
+            break;
+    }
+}
+
+/**
+ * @brief YMZ294 初期化関数
+ * 
+ */
 void drv_ymz294_init(void)
 {
     reg_init_all();
+
+    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE_NOISE, 0);
 }
