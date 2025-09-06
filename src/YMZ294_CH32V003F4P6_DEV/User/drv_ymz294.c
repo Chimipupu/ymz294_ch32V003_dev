@@ -200,9 +200,33 @@ uint8_t drv_ymz294_get_reg(uint8_t addr)
 }
 
 /**
+ * @brief YMZ294の出力音量調整関数
+ * 
+ * @param ch Ch A~C
+ * @param volume 音量 0~15の16段階
+ */
+void drv_ymz294_set_volume(uint8_t ch, uint8_t volume)
+{
+    switch (ch)
+    {
+        case YMZ294_TONE_CH_A:
+            drv_ymz294_set_reg(YMZ294_REG_VOLUME_CTRL_CH_A_ADDR, volume);
+            break;
+
+        case YMZ294_TONE_CH_B:
+            drv_ymz294_set_reg(YMZ294_REG_VOLUME_CTRL_CH_B_ADDR, volume);
+            break;
+
+        case YMZ294_TONE_CH_C:
+            drv_ymz294_set_reg(YMZ294_REG_VOLUME_CTRL_CH_C_ADDR, volume);
+            break;
+    }
+}
+
+/**
  * @brief YMZ294のトーンの周波数をMIDIノートナンバーに応じて設定
  * 
- * @param ch  Ch A~C
+ * @param ch Ch A~C
  * @param notenum MIDIノートナンバー0～127
  */
 void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum)
