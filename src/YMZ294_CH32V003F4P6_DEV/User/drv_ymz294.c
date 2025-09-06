@@ -80,6 +80,7 @@ const uint16_t g_tone_tp_tbl[] = {
 
     478,  // ド  (C4) 261.63 Hz (中央)
     425,  // レ  (D4) 293.66 Hz
+    402,  // レ# (D#4) 311.13 Hz
     379,  // ミ  (E4) 329.63 Hz
     358,  // ファ(F4) 349.23 Hz
     338,  // ファ# (F#4) 369.99 Hz
@@ -377,11 +378,11 @@ void drv_ymz294_play_music_tone(const uint8_t *p_tone_tbl, uint16_t size)
         drv_ymz294_set_tone_freq(YMZ294_TONE_CH_B, *p_tbl);
         drv_ymz294_set_tone_freq(YMZ294_TONE_CH_C, *p_tbl);
         p_tbl++;
-        Delay_Ms(500);
+        Delay_Ms(350);
     }
 
-    drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
     drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
+    drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
 }
 
 #ifdef YMZ294_DRV_DEBUG

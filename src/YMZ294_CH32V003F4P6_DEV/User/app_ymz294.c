@@ -12,12 +12,10 @@
 #include "app_ymz294.h"
 #include "common.h"
 
-
 // 某コンビニ入店音の音階テーブル
-const uint8_t g_music_tone_tbl[12] = {
-    // ファミリーマート入店音 ドレミ音階例
-    TONE_FS4, TONE_D4, TONE_A3, TONE_D4, TONE_E4, TONE_A5,
-    TONE_E3, TONE_E4, TONE_FS4, TONE_E4, TONE_A3, TONE_D4
+const uint8_t g_music_tone_tbl[] = {
+    TONE_FS4, TONE_D3, TONE_A2, TONE_D3, TONE_E4, TONE_A4,
+    TONE_E3, TONE_E4, TONE_FS4, TONE_E4, TONE_A2, TONE_D4
 };
 
 void app_ymz294_init()

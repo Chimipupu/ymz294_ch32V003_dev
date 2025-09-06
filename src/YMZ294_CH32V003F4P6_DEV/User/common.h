@@ -1,5 +1,5 @@
 /**
- * @file app_ymz294.h
+ * @file common.h
  * @author Chimipupu(https://github.com/Chimipupu)
  * @brief  共通ヘッダー
  * @version 0.1
