@@ -16,18 +16,20 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include <ch32v00x.h>
+
 // YMZ294の制御ピン
-#define YMZ294_WR_PIN       
-#define YMZ294_CS_PIN       
-#define YMZ294_A0_PIN       
-#define YMZ294_D0_PIN       
-#define YMZ294_D1_PIN       
-#define YMZ294_D2_PIN       
-#define YMZ294_D3_PIN       
-#define YMZ294_D4_PIN       
-#define YMZ294_D5_PIN       
-#define YMZ294_D6_PIN       
-#define YMZ294_D7_PIN       
+#define YMZ294_WR_PIN     GPIO_Pin_4  // PD4
+#define YMZ294_CS_PIN     GPIO_Pin_0  // PD0
+#define YMZ294_A0_PIN     GPIO_Pin_0  // PC0
+#define YMZ294_D0_PIN     GPIO_Pin_3  // PD3
+#define YMZ294_D1_PIN     GPIO_Pin_2  // PD2
+#define YMZ294_D2_PIN     GPIO_Pin_7  // PC7
+#define YMZ294_D3_PIN     GPIO_Pin_6  // PC6
+#define YMZ294_D4_PIN     GPIO_Pin_5  // PC5
+#define YMZ294_D5_PIN     GPIO_Pin_4  // PC4
+#define YMZ294_D6_PIN     GPIO_Pin_3  // PC3
+#define YMZ294_D7_PIN     GPIO_Pin_7  // PD7
 
 // YMZ294のレジスタ
 #define YMZ294_REG_CNT                           0x0E // YMZ294のレジスタ数
