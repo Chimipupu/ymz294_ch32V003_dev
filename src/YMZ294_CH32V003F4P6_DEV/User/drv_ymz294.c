@@ -313,8 +313,10 @@ void drv_ymz294_init(void)
 {
     reg_init_all();
 
-    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A);
-    drv_ymz294_set_volume(YMZ294_TONE_CH_A, 15);
+    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A_B_C);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x0F);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x0F);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x0F);
 }
 
 void ymz294_test(void)
@@ -327,11 +329,13 @@ void ymz294_test(void)
     for (i = 0; i < 8; i++)
     {
         drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_A, i);
+        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_B, i);
+        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_C, i);
 #ifdef DEBUG_PRINTF
         tp = *p_reg[YMZ294_REG_CH_A_SOUND_FREQ_ADDR];
         tp = tp | (*p_reg[YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR] << 8);
         printf("tp = %d\r\n", tp);
 #endif // DEBUG_PRINTF
-        Delay_Ms(500);
+        Delay_Ms(1000);
     }
 }
