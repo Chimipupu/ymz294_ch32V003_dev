@@ -15,6 +15,7 @@
 void app_ymz294_init()
 {
     // TODO
+    // ymz294_test();
 }
 
 void app_ymz294_main()

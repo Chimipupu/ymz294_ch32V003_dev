@@ -49,6 +49,19 @@ const uint8_t g_ymz294_reg_bit_mask_tbl[YMZ294_REG_CNT] = {
     0x1F, 0x1F, 0x1F, 0xFF, 0xFF, 0x0F              // Addr 0x08 ~ 0x0D
 };
 
+// YMZ294用音階テーブル
+const uint16_t g_tone_tp_tbl[] = {
+    478, // ド  (C4) ... 261.63 Hz
+    425, // レ  (D4) ... 293.66 Hz
+    379, // ミ  (E4) ... 329.63 Hz
+    358, // ファ(F4) ... 349.23 Hz
+    319, // ソ  (G4) ... 392.00 Hz
+    284, // ラ  (A4) ... 440 Hz
+    253, // シ  (B4) ... 493.88 Hz
+    239, // ド  (C5) ... 523.25 Hz
+};
+
+#if 0
 // YMZ294用のMIDIノート番号テーブル
 const uint16_t g_midi_notenum_tbl[] = {
 //  C0     C#0     D0     D#0    E0     F0     F#0    G0
@@ -101,6 +114,7 @@ const uint16_t g_midi_notenum_tbl[] = {
 
     0                                                       // 無音
 };
+#endif
 
 static void reg_init_all(void);
 static void data_pin_set_byte(uint8_t val);
@@ -232,11 +246,11 @@ void drv_ymz294_set_volume(uint8_t ch, uint8_t volume)
  */
 void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum)
 {
-    uint8_t upper, lower;
+    uint16_t upper, lower;
 
-#if 0
-    upper = (uint8_t)((284/2) >> 8);
-    lower = (uint8_t)((284/2) & 0x00FF);
+#if 1
+    upper = ((g_tone_tp_tbl[notenum] & 0x0F00) >> 8);
+    lower = (g_tone_tp_tbl[notenum] & 0x00FF);
 #else
     upper = (uint8_t)(g_midi_notenum_tbl[notenum] >> 8);
     lower = (uint8_t)(g_midi_notenum_tbl[notenum] & 0x00FF);
@@ -306,10 +320,14 @@ void drv_ymz294_init(void)
 void ymz294_test(void)
 {
     uint8_t i;
+    uint16_t tp;
 
-    for (i = 0; i < 128; i++)
+    for (i = 0; i < 8; i++)
     {
         drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_A, i);
-        Delay_Ms(300);
+        tp = *p_reg[YMZ294_REG_CH_A_SOUND_FREQ_ADDR];
+        tp = tp | (*p_reg[YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR] << 8);
+        printf("tp = %d\r\n", tp);
+        Delay_Ms(500);
     }
 }
