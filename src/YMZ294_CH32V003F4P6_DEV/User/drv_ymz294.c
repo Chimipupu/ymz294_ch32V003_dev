@@ -259,18 +259,18 @@ void drv_ymz294_set_tone_freq_midi_notenum(uint8_t ch, uint8_t notenum)
     switch (ch)
     {
         case YMZ294_TONE_CH_A:
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR, lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, (uint8_t)upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR,   (uint8_t)lower);
             break;
 
         case YMZ294_TONE_CH_B:
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR, lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, (uint8_t)upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR,   (uint8_t)lower);
             break;
 
         case YMZ294_TONE_CH_C:
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR, lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, (uint8_t)upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR,   (uint8_t)lower);
             break;
     }
 }
@@ -320,14 +320,18 @@ void drv_ymz294_init(void)
 void ymz294_test(void)
 {
     uint8_t i;
+#ifdef DEBUG_PRINTF
     uint16_t tp;
+#endif // DEBUG_PRINTF
 
     for (i = 0; i < 8; i++)
     {
         drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_A, i);
+#ifdef DEBUG_PRINTF
         tp = *p_reg[YMZ294_REG_CH_A_SOUND_FREQ_ADDR];
         tp = tp | (*p_reg[YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR] << 8);
         printf("tp = %d\r\n", tp);
+#endif // DEBUG_PRINTF
         Delay_Ms(500);
     }
 }

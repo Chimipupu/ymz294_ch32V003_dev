@@ -12,6 +12,7 @@
 #include "debug.h"
 #include "drv_ymz294.h"
 #include "app_ymz294.h"
+#include "common.h"
 
 static void pin_conf(void);
 
@@ -110,8 +111,10 @@ int main(void)
     // GPIO初期化
     pin_conf();
 
+#ifdef DEBUG_PRINTF
     // SDIでのprintf()を有効
     SDI_Printf_Enable();
+#endif // DEBUG_PRINTF
 
     // YMZ294のH/W初期化
     drv_ymz294_init();

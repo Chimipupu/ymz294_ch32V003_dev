@@ -18,6 +18,8 @@
 
 #include <ch32v00x.h>
 
+#include "common.h"
+
 // YMZ294 Ch関連
 #define YMZ294_TONE_CH_A                        0
 #define YMZ294_TONE_CH_B                        1

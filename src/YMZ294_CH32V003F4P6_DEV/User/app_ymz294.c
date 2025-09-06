@@ -10,7 +10,7 @@
  */
 
 #include "app_ymz294.h"
-#include <stdio.h>
+#include "common.h"
 
 void app_ymz294_init()
 {
