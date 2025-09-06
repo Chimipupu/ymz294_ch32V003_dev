@@ -51,14 +51,30 @@ const uint8_t g_ymz294_reg_bit_mask_tbl[YMZ294_REG_CNT] = {
 
 // YMZ294用音階テーブル
 const uint16_t g_tone_tp_tbl[] = {
-    478, // ド  (C4) ... 261.63 Hz
+    478, // ド  (C4) ... 261.63 Hz (中央)
     425, // レ  (D4) ... 293.66 Hz
     379, // ミ  (E4) ... 329.63 Hz
     358, // ファ(F4) ... 349.23 Hz
     319, // ソ  (G4) ... 392.00 Hz
-    284, // ラ  (A4) ... 440 Hz
+    284, // ラ  (A4) ... 440.00 Hz (基準)
     253, // シ  (B4) ... 493.88 Hz
-    239, // ド  (C5) ... 523.25 Hz
+
+    239, // ド  (C5) ... 523.00 Hz
+    213, // レ  (D5) ... 587.33 Hz
+    190, // ミ  (E5) ... 659.26 Hz
+    179, // ファ(F5) ... 698.46 Hz
+    159, // ソ  (G5) ... 783.99 Hz
+    142, // ラ  (A5) ... 880.00 Hz
+    127, // シ  (B5) ... 987.77 Hz
+
+    119, // ド  (C6) ... 1046.50 Hz
+    106, // レ  (D6) ... 1174.66 Hz
+    95,  // ミ  (E6) ... 1318.51 Hz
+    89,  // ファ(F6) ... 1396.91 Hz
+    80,  // ソ  (G6) ... 1567.98 Hz
+    71,  // ラ  (A6) ... 1760.00 Hz
+    63,  // シ  (B6) ... 1975.53 Hz
+    60,  // ド  (C7) ... 2093.00 Hz
 };
 
 #if 0
@@ -329,8 +345,8 @@ void ymz294_test(void)
     for (i = 0; i < 8; i++)
     {
         drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_A, i);
-        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_B, i);
-        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_C, i);
+        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_B, i+7);
+        drv_ymz294_set_tone_freq_midi_notenum(YMZ294_TONE_CH_C, i+14);
 #ifdef DEBUG_PRINTF
         tp = *p_reg[YMZ294_REG_CH_A_SOUND_FREQ_ADDR];
         tp = tp | (*p_reg[YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR] << 8);
