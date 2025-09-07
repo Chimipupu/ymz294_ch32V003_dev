@@ -11,12 +11,12 @@
 
 #include "drv_ymz294.h"
 
-SOUND_FREQ_CH_A REG_SOUND_FREQ_CH_A;
-SOUND_FREQ_CH_A_2 REG_SOUND_FREQ_CH_A_2;
-SOUND_FREQ_CH_B REG_SOUND_FREQ_CH_B;
-SOUND_FREQ_CH_B_2 REG_SOUND_FREQ_CH_B_2;
-SOUND_FREQ_CH_C REG_SOUND_FREQ_CH_C;
-SOUND_FREQ_CH_C_2 REG_SOUND_FREQ_CH_C_2;
+TONE_FREQ_CH_A REG_TONE_FREQ_CH_A;
+TONE_FREQ_CH_A_2 REG_TONE_FREQ_CH_A_2;
+TONE_FREQ_CH_B REG_TONE_FREQ_CH_B;
+TONE_FREQ_CH_B_2 REG_TONE_FREQ_CH_B_2;
+TONE_FREQ_CH_C REG_TONE_FREQ_CH_C;
+TONE_FREQ_CH_C_2 REG_TONE_FREQ_CH_C_2;
 NOISE_FREQ REG_NOISE_FREQ;
 MIXSER REG_MIXSER;
 VOLUME_CTRL_CH_A REG_VOLUME_CTRL_CH_A;
@@ -27,12 +27,12 @@ ENVELOPE_FREQ_2 REG_ENVELOPE_FREQ_2;
 ENVELOPE_TYPE REG_ENVELOPE_TYPE;
 
 uint8_t *p_reg[YMZ294_REG_CNT] = {
-    &REG_SOUND_FREQ_CH_A.BYTE,
-    &REG_SOUND_FREQ_CH_A_2.BYTE,
-    &REG_SOUND_FREQ_CH_B.BYTE,
-    &REG_SOUND_FREQ_CH_B_2.BYTE,
-    &REG_SOUND_FREQ_CH_C.BYTE,
-    &REG_SOUND_FREQ_CH_C_2.BYTE,
+    &REG_TONE_FREQ_CH_A.BYTE,
+    &REG_TONE_FREQ_CH_A_2.BYTE,
+    &REG_TONE_FREQ_CH_B.BYTE,
+    &REG_TONE_FREQ_CH_B_2.BYTE,
+    &REG_TONE_FREQ_CH_C.BYTE,
+    &REG_TONE_FREQ_CH_C_2.BYTE,
     &REG_NOISE_FREQ.BYTE,
     &REG_MIXSER.BYTE,
     &REG_VOLUME_CTRL_CH_A.BYTE,
@@ -51,6 +51,7 @@ const uint8_t g_ymz294_reg_bit_mask_tbl[YMZ294_REG_CNT] = {
 
 // YMZ294用音階テーブル
 const uint16_t g_tone_tp_tbl[] = {
+    0,    // 無音
     4545, // ラ  (A0) 27.50 Hz (最低音)
     4050, // シ  (B0) 30.87 Hz
 
@@ -165,7 +166,7 @@ static void data_pin_set_byte(uint8_t val)
                 GPIO_WriteBit(GPIOC, YMZ294_D6_PIN, bit);
                 break;
             case 7:
-                GPIO_WriteBit(GPIOD, YMZ294_D7_PIN, bit);
+                GPIO_WriteBit(GPIOC, YMZ294_D7_PIN, bit);
                 break;
         }
     }
@@ -176,18 +177,29 @@ static void set_tone_tp(uint8_t ch, uint8_t upper, uint8_t lower)
     switch (ch)
     {
         case YMZ294_TONE_CH_A:
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, (uint8_t)upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_TONE_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_TONE_FREQ_ADDR,   lower);
             break;
 
         case YMZ294_TONE_CH_B:
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, (uint8_t)upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_TONE_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_TONE_FREQ_ADDR,   lower);
             break;
 
         case YMZ294_TONE_CH_C:
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, (uint8_t)upper);
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR,   (uint8_t)lower);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_ADDR,   lower);
+            break;
+
+        case YMZ294_TONE_CH_ALL:
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_TONE_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_A_TONE_FREQ_ADDR,   lower);
+
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_TONE_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_B_TONE_FREQ_ADDR,   lower);
+
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_2_ADDR, upper);
+            drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_ADDR,   lower);
             break;
     }
 }
@@ -269,44 +281,20 @@ void drv_ymz294_set_volume(uint8_t ch, uint8_t volume)
  */
 void drv_ymz294_set_tone_freq(uint8_t ch, uint16_t tone)
 {
-    uint16_t upper, lower;
+    uint8_t upper = 0;
+    uint8_t lower = 0;
 
-    upper = ((g_tone_tp_tbl[tone] & 0x0F00) >> 8);
-    lower = (g_tone_tp_tbl[tone] & 0x00FF);
+    if(tone > 0) {
+        upper = ((g_tone_tp_tbl[tone] & 0x0F00) >> 8);
+        lower = (g_tone_tp_tbl[tone] & 0x00FF);
+    }
 
     set_tone_tp(ch, upper, lower);
 }
 
 void drv_ymz294_set_tone_off(uint8_t ch)
 {
-    switch (ch)
-    {
-        case YMZ294_TONE_CH_A:
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, 0);
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR,   0);
-            break;
-
-        case YMZ294_TONE_CH_B:
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, 0);
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR,   0);
-            break;
-
-        case YMZ294_TONE_CH_C:
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, 0);
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR,   0);
-            break;
-
-        case YMZ294_TONE_CH_ALL:
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR, 0);
-            drv_ymz294_set_reg(YMZ294_REG_CH_A_SOUND_FREQ_ADDR,   0);
-
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR, 0);
-            drv_ymz294_set_reg(YMZ294_REG_CH_B_SOUND_FREQ_ADDR,   0);
-
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR, 0);
-            drv_ymz294_set_reg(YMZ294_REG_CH_C_SOUND_FREQ_ADDR,   0);
-            break;
-    }
+    set_tone_tp(ch, 0, 0);
 }
 
 /**
@@ -374,15 +362,16 @@ void drv_ymz294_play_music_tone(const uint8_t *p_tone_tbl, uint16_t size)
 
     for (i = 0; i < size; i++)
     {
-        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_A, *p_tbl);
-        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_B, *p_tbl);
-        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_C, *p_tbl);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_ALL, *p_tbl);
         p_tbl++;
         Delay_Ms(350);
     }
 
-    drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x00);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x00);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x00);
     drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
+    drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
 }
 
 #ifdef YMZ294_DRV_DEBUG

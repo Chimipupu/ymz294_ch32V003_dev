@@ -64,16 +64,16 @@
 #define YMZ294_D4_PIN                           GPIO_Pin_5  // PC5
 #define YMZ294_D5_PIN                           GPIO_Pin_4  // PC4
 #define YMZ294_D6_PIN                           GPIO_Pin_3  // PC3
-#define YMZ294_D7_PIN                           GPIO_Pin_7  // PD7
+#define YMZ294_D7_PIN                           GPIO_Pin_2  // PC2
 
 // YMZ294のレジスタ
 #define YMZ294_REG_CNT                           0x0E // YMZ294のレジスタ数
-#define YMZ294_REG_CH_A_SOUND_FREQ_ADDR          0x00 // Ch A 楽音周波数レジスタ TP[7:0]
-#define YMZ294_REG_CH_A_SOUND_FREQ_2_ADDR        0x01 // Ch A 楽音周波数レジスタ TP[11:8]
-#define YMZ294_REG_CH_B_SOUND_FREQ_ADDR          0x02 // Ch B 楽音周波数レジスタ TP[7:0]
-#define YMZ294_REG_CH_B_SOUND_FREQ_2_ADDR        0x03 // Ch B 楽音周波数レジスタ TP[11:8]
-#define YMZ294_REG_CH_C_SOUND_FREQ_ADDR          0x04 // Ch C 楽音周波数レジスタ TP[7:0]
-#define YMZ294_REG_CH_C_SOUND_FREQ_2_ADDR        0x05 // Ch C 楽音周波数レジスタ TP[11:8]
+#define YMZ294_REG_CH_A_TONE_FREQ_ADDR          0x00 // Ch A 楽音周波数レジスタ TP[7:0]
+#define YMZ294_REG_CH_A_TONE_FREQ_2_ADDR        0x01 // Ch A 楽音周波数レジスタ TP[11:8]
+#define YMZ294_REG_CH_B_TONE_FREQ_ADDR          0x02 // Ch B 楽音周波数レジスタ TP[7:0]
+#define YMZ294_REG_CH_B_TONE_FREQ_2_ADDR        0x03 // Ch B 楽音周波数レジスタ TP[11:8]
+#define YMZ294_REG_CH_C_TONE_FREQ_ADDR          0x04 // Ch C 楽音周波数レジスタ TP[7:0]
+#define YMZ294_REG_CH_C_TONE_FREQ_2_ADDR        0x05 // Ch C 楽音周波数レジスタ TP[11:8]
 #define YMZ294_REG_NOISE_ADDR                    0x06 // ノイズ周波数レジスタ NP[4:0]
 #define YMZ294_REG_MIXER_ADDR                    0x07 // ミキサーレジスタ
 #define YMZ294_REG_VOLUME_CTRL_CH_A_ADDR         0x08 // 音量コントロールDAC Ch Aレジスタ
@@ -95,7 +95,7 @@ typedef union {
         uint8_t TP6:1;     // bit6
         uint8_t TP7:1;     // bit7
     }BIT;
-} SOUND_FREQ_CH_A;
+} TONE_FREQ_CH_A;
 
 typedef union {
     uint8_t BYTE;
@@ -106,7 +106,7 @@ typedef union {
         uint8_t TP11:1;         // bit3
         uint8_t RESERVED:4;     // bit[7:4]
     }BIT;
-} SOUND_FREQ_CH_A_2;
+} TONE_FREQ_CH_A_2;
 
 typedef union {
     uint8_t BYTE;
@@ -120,7 +120,7 @@ typedef union {
         uint8_t TP6:1;     // bit6
         uint8_t TP7:1;     // bit7
     }BIT;
-} SOUND_FREQ_CH_B;
+} TONE_FREQ_CH_B;
 
 typedef union {
     uint8_t BYTE;
@@ -131,7 +131,7 @@ typedef union {
         uint8_t TP11:1;         // bit3
         uint8_t RESERVED:4;     // bit[7:4]
     }BIT;
-} SOUND_FREQ_CH_B_2;
+} TONE_FREQ_CH_B_2;
 
 typedef union {
     uint8_t BYTE;
@@ -145,7 +145,7 @@ typedef union {
         uint8_t TP6:1;     // bit6
         uint8_t TP7:1;     // bit7
     }BIT;
-} SOUND_FREQ_CH_C;
+} TONE_FREQ_CH_C;
 
 typedef union {
     uint8_t BYTE;
@@ -156,7 +156,7 @@ typedef union {
         uint8_t TP11:1;         // bit3
         uint8_t RESERVED:4;     // bit[7:4]
     }BIT;
-} SOUND_FREQ_CH_C_2;
+} TONE_FREQ_CH_C_2;
 
 typedef union {
     uint8_t BYTE;
@@ -261,7 +261,8 @@ typedef union {
 
 // YMZ294 音階関連
 typedef enum {
-    TONE_A0 = 0,    // ラ  (A0) 27.50 Hz (最低音)
+    TONE_NONE = 0,   // 無音
+    TONE_A0,        // ラ  (A0) 27.50 Hz (最低音)
     TONE_B0,        // シ  (B0) 30.87 Hz
 
     TONE_C1,        // ド  (C1) 32.70 Hz

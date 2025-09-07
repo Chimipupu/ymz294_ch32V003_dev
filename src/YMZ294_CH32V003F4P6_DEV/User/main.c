@@ -28,7 +28,11 @@ static void pin_conf(void)
     GPIO_InitTypeDef  pin_pc5;
     GPIO_InitTypeDef  pin_pc4;
     GPIO_InitTypeDef  pin_pc3;
+#if 1
+    GPIO_InitTypeDef  pin_pc2;
+#else
     GPIO_InitTypeDef  pin_pd7;
+#endif
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
 
@@ -82,11 +86,10 @@ static void pin_conf(void)
     pin_pc3.GPIO_Speed = GPIO_Speed_30MHz;
     GPIO_Init(GPIOC, &pin_pc3);
 
-    pin_pd7.GPIO_Pin = YMZ294_D7_PIN;
-    pin_pd7.GPIO_Mode = GPIO_Mode_Out_PP;
-    pin_pd7.GPIO_Speed = GPIO_Speed_30MHz;
-    GPIO_Init(GPIOD, &pin_pd7);
-
+    pin_pc2.GPIO_Pin = YMZ294_D7_PIN;
+    pin_pc2.GPIO_Mode = GPIO_Mode_Out_PP;
+    pin_pc2.GPIO_Speed = GPIO_Speed_30MHz;
+    GPIO_Init(GPIOC, &pin_pc2);
 
     GPIO_WriteBit(GPIOD, YMZ294_WR_PIN, Bit_SET);
     GPIO_WriteBit(GPIOD, YMZ294_CS_PIN, Bit_SET);
@@ -99,7 +102,7 @@ static void pin_conf(void)
     GPIO_WriteBit(GPIOC, YMZ294_D4_PIN, Bit_RESET);
     GPIO_WriteBit(GPIOC, YMZ294_D5_PIN, Bit_RESET);
     GPIO_WriteBit(GPIOC, YMZ294_D6_PIN, Bit_RESET);
-    GPIO_WriteBit(GPIOD, YMZ294_D7_PIN, Bit_RESET);
+    GPIO_WriteBit(GPIOC, YMZ294_D7_PIN, Bit_RESET);
 }
 
 int main(void)
