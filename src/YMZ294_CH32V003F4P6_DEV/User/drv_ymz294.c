@@ -49,6 +49,13 @@ const uint8_t g_ymz294_reg_bit_mask_tbl[YMZ294_REG_CNT] = {
     0x1F, 0x1F, 0x1F, 0xFF, 0xFF, 0x0F              // Addr 0x08 ~ 0x0D
 };
 
+// 楽音アドレステーブル
+const tone_addr_t g_tone_addr_tbl[] = {
+    {YMZ294_REG_CH_A_TONE_FREQ_2_ADDR, YMZ294_REG_CH_A_TONE_FREQ_ADDR},
+    {YMZ294_REG_CH_B_TONE_FREQ_2_ADDR, YMZ294_REG_CH_B_TONE_FREQ_ADDR},
+    {YMZ294_REG_CH_C_TONE_FREQ_2_ADDR, YMZ294_REG_CH_C_TONE_FREQ_ADDR}
+};
+
 // YMZ294用音階テーブル
 const uint16_t g_tone_tp_tbl[] = {
     0,    // 無音
@@ -207,36 +214,20 @@ static void set_tone_tp(uint8_t ch, uint8_t upper, uint8_t lower)
 
 static void set_3_chord_tone_tp(tone_3_chord_data_t *p_tone_tbl)
 {
-    uint8_t upper_a = 0;
-    uint8_t lower_a = 0;
-    uint8_t upper_b = 0;
-    uint8_t lower_b = 0;
-    uint8_t upper_c = 0;
-    uint8_t lower_c = 0;
+    uint8_t i;
+    uint8_t upper = 0, lower = 0;
+    uint8_t data_buf[3] = {p_tone_tbl->data_a, p_tone_tbl->data_b, p_tone_tbl->data_c};
 
-    if(p_tone_tbl->data_a > 0) {
-        upper_a = ((g_tone_tp_tbl[p_tone_tbl->data_a] & 0x0F00) >> 8);
-        lower_a = (g_tone_tp_tbl[p_tone_tbl->data_a] & 0x00FF);
+    for (i = 0; i < 3; i++)
+    {
+        if(data_buf[i] > 0) {
+            upper = ((g_tone_tp_tbl[data_buf[i]] & 0x0F00) >> 8);
+            lower = (g_tone_tp_tbl[data_buf[i]] & 0x00FF);
+        }
+
+        drv_ymz294_set_reg(g_tone_addr_tbl[i].upper_addr, upper);
+        drv_ymz294_set_reg(g_tone_addr_tbl[i].lower_addr, lower);
     }
-
-    if(p_tone_tbl->data_b > 0) {
-        upper_b = ((g_tone_tp_tbl[p_tone_tbl->data_b] & 0x0F00) >> 8);
-        lower_b = (g_tone_tp_tbl[p_tone_tbl->data_b] & 0x00FF);
-    }
-
-    if(p_tone_tbl->data_c > 0) {
-        upper_c = ((g_tone_tp_tbl[p_tone_tbl->data_c] & 0x0F00) >> 8);
-        lower_c = (g_tone_tp_tbl[p_tone_tbl->data_c] & 0x00FF);
-    }
-
-    drv_ymz294_set_reg(YMZ294_REG_CH_A_TONE_FREQ_2_ADDR, upper_a);
-    drv_ymz294_set_reg(YMZ294_REG_CH_A_TONE_FREQ_ADDR,   lower_a);
-
-    drv_ymz294_set_reg(YMZ294_REG_CH_B_TONE_FREQ_2_ADDR, upper_b);
-    drv_ymz294_set_reg(YMZ294_REG_CH_B_TONE_FREQ_ADDR,   lower_b);
-
-    drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_2_ADDR, upper_c);
-    drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_ADDR,   lower_c);
 }
 
 /**
@@ -412,21 +403,17 @@ void drv_ymz294_play_music_tone(const uint8_t *p_tone_tbl, uint16_t size)
     p_tbl = (uint8_t *)p_tone_tbl;
 
     drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
-    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A_B_C);
+    drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A);
     drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x0F);
-    drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x0F);
-    drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x0F);
 
     for (i = 0; i < size; i++)
     {
-        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_ALL, *p_tbl);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_A, *p_tbl);
         p_tbl++;
         Delay_Ms(350);
     }
 
     drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x00);
-    drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x00);
-    drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x00);
     drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
     drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
 }

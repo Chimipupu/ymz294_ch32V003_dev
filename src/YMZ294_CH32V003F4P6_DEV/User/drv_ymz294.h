@@ -258,6 +258,12 @@ typedef union {
     }BIT;
 } ENVELOPE_TYPE;
 
+// 楽音アドレス構造体
+typedef struct
+{
+    uint8_t upper_addr; // 上位アドレス
+    uint8_t lower_addr; // 下位アドレス
+} tone_addr_t;
 
 // 3和音データ構造体
 typedef struct
