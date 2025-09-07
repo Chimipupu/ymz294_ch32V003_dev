@@ -259,6 +259,14 @@ typedef union {
 } ENVELOPE_TYPE;
 
 
+// 3和音データ構造体
+typedef struct
+{
+    uint8_t data_a; // Ch A用データ
+    uint8_t data_b; // Ch B用データ
+    uint8_t data_c; // Ch C用データ
+} tone_3_chord_data_t;
+
 // YMZ294 音階関連
 typedef enum {
     TONE_NONE = 0,   // 無音
@@ -332,8 +340,10 @@ void drv_ymz294_set_reg(uint8_t addr, uint8_t val);
 uint8_t drv_ymz294_get_reg(uint8_t addr);
 void drv_ymz294_set_volume(uint8_t ch, uint8_t volume);
 void drv_ymz294_set_tone_freq(uint8_t ch, uint16_t tone);
+void drv_ymz294_set_3_chord_tone_freq(tone_3_chord_data_t *p_tone_tbl);
 void drv_ymz294_set_tone_off(uint8_t ch);
 void drv_ymz294_play_music_tone(const uint8_t *p_tone_tbl, uint16_t size);
+void drv_ymz294_play_music_chord_tone(const tone_3_chord_data_t *p_tone_tbl, uint16_t size);
 void drv_ymz294_mixser_config(uint8_t type, uint8_t val);
 void drv_ymz294_init(void);
 

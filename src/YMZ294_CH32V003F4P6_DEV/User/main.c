@@ -28,11 +28,7 @@ static void pin_conf(void)
     GPIO_InitTypeDef  pin_pc5;
     GPIO_InitTypeDef  pin_pc4;
     GPIO_InitTypeDef  pin_pc3;
-#if 1
     GPIO_InitTypeDef  pin_pc2;
-#else
-    GPIO_InitTypeDef  pin_pd7;
-#endif
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
 

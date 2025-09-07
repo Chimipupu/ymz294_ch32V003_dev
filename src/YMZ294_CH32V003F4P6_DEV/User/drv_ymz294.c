@@ -121,6 +121,7 @@ const uint16_t g_tone_tp_tbl[] = {
 static void reg_init_all(void);
 static void data_pin_set_byte(uint8_t val);
 static void set_tone_tp(uint8_t ch, uint8_t upper, uint8_t lower);
+static void set_3_chord_tone_tp(tone_3_chord_data_t *p_tone_tbl);
 
 static void reg_init_all(void)
 {
@@ -202,6 +203,40 @@ static void set_tone_tp(uint8_t ch, uint8_t upper, uint8_t lower)
             drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_ADDR,   lower);
             break;
     }
+}
+
+static void set_3_chord_tone_tp(tone_3_chord_data_t *p_tone_tbl)
+{
+    uint8_t upper_a = 0;
+    uint8_t lower_a = 0;
+    uint8_t upper_b = 0;
+    uint8_t lower_b = 0;
+    uint8_t upper_c = 0;
+    uint8_t lower_c = 0;
+
+    if(p_tone_tbl->data_a > 0) {
+        upper_a = ((g_tone_tp_tbl[p_tone_tbl->data_a] & 0x0F00) >> 8);
+        lower_a = (g_tone_tp_tbl[p_tone_tbl->data_a] & 0x00FF);
+    }
+
+    if(p_tone_tbl->data_b > 0) {
+        upper_b = ((g_tone_tp_tbl[p_tone_tbl->data_b] & 0x0F00) >> 8);
+        lower_b = (g_tone_tp_tbl[p_tone_tbl->data_b] & 0x00FF);
+    }
+
+    if(p_tone_tbl->data_c > 0) {
+        upper_c = ((g_tone_tp_tbl[p_tone_tbl->data_c] & 0x0F00) >> 8);
+        lower_c = (g_tone_tp_tbl[p_tone_tbl->data_c] & 0x00FF);
+    }
+
+    drv_ymz294_set_reg(YMZ294_REG_CH_A_TONE_FREQ_2_ADDR, upper_a);
+    drv_ymz294_set_reg(YMZ294_REG_CH_A_TONE_FREQ_ADDR,   lower_a);
+
+    drv_ymz294_set_reg(YMZ294_REG_CH_B_TONE_FREQ_2_ADDR, upper_b);
+    drv_ymz294_set_reg(YMZ294_REG_CH_B_TONE_FREQ_ADDR,   lower_b);
+
+    drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_2_ADDR, upper_c);
+    drv_ymz294_set_reg(YMZ294_REG_CH_C_TONE_FREQ_ADDR,   lower_c);
 }
 
 /**
@@ -292,6 +327,22 @@ void drv_ymz294_set_tone_freq(uint8_t ch, uint16_t tone)
     set_tone_tp(ch, upper, lower);
 }
 
+/**
+ * @brief YMZ294のトーンの3和音の周波数設定関数
+ * 
+ * @param ch Ch A~C
+ * @param freq 設定したい音階
+ */
+void drv_ymz294_set_3_chord_tone_freq(tone_3_chord_data_t *p_tone_tbl)
+{
+    set_3_chord_tone_tp(p_tone_tbl);
+}
+
+/**
+ * @brief ３和音すべての周波数を0にする関数
+ * 
+ * @param ch 
+ */
 void drv_ymz294_set_tone_off(uint8_t ch)
 {
     set_tone_tp(ch, 0, 0);
@@ -347,6 +398,12 @@ void drv_ymz294_init(void)
     drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x0F);
 }
 
+/**
+ * @brief 単音演奏用
+ * 
+ * @param p_tone_tbl 楽譜テーブル
+ * @param size 曲長
+ */
 void drv_ymz294_play_music_tone(const uint8_t *p_tone_tbl, uint16_t size)
 {
     uint8_t i;
@@ -374,25 +431,41 @@ void drv_ymz294_play_music_tone(const uint8_t *p_tone_tbl, uint16_t size)
     drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
 }
 
-#ifdef YMZ294_DRV_DEBUG
-void ymz294_test(void)
+/**
+ * @brief 3和音演奏用
+ * 
+ * @param p_tone_tbl 楽譜テーブル
+ * @param size 曲長
+ */
+void drv_ymz294_play_music_chord_tone(const tone_3_chord_data_t *p_tone_tbl, uint16_t size)
 {
     uint8_t i;
 
+    drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
     drv_ymz294_mixser_config(MIXSER_CONFIG_TONE, MIXSER_OUTPUT_TONE_CH_A_B_C);
     drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x0F);
     drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x0F);
     drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x0F);
 
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < size; i++)
     {
-        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_A, i);
-        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_B, i+7);
-        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_C, i+14);
-        Delay_Ms(1000);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_A, p_tone_tbl->data_a);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_B, p_tone_tbl->data_b);
+        drv_ymz294_set_tone_freq(YMZ294_TONE_CH_C, p_tone_tbl->data_c);
+        p_tone_tbl++;
+        Delay_Ms(350);
     }
 
+    drv_ymz294_set_volume(YMZ294_TONE_CH_A, 0x00);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_B, 0x00);
+    drv_ymz294_set_volume(YMZ294_TONE_CH_C, 0x00);
     drv_ymz294_set_tone_off(YMZ294_TONE_CH_ALL);
     drv_ymz294_mixser_config(MIXSER_OUTPUT_MUTE, 0);
+}
+
+#ifdef YMZ294_DRV_DEBUG
+void ymz294_test(void)
+{
+    // NOP
 }
 #endif // YMZ294_DRV_DEBUG
